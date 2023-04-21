@@ -1,0 +1,70 @@
+<!-- Prepare a login form webpage that loads two textboxes in the page and a submit button. 
+1) Input for a username
+2) Input for a password
+3) Submit button for Login.
+
+Add Bootstrap to the web application and load the button from Bootstrap styles using markup below:
+
+<button type="button" class="btn btn-success">Success</button>
+
+Submit the form after you have non-empty Username and Password on the page.
+
+Redirect to another page and show the Username and Secure encrypted hash of the Password in the second page. -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WEB322-Test6</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css"
+        integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"
+        integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd"
+        crossorigin="anonymous"></script>
+
+    <style>
+        body {
+            align-items: center;
+            background-color: whitesmoke;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        .container {
+            background-color: white;
+            border-radius: 20px;
+            box-sizing: border-box;
+            height: 250px;
+            padding: 20px;
+            width: 320px;
+            
+        
+        }
+    </style>
+</head>
+{{#if errorMsg}}
+<h5>{{errorMsg}}</h5>
+{{else}}
+<h5 class="heading">Please login below</h5>
+{{/if}}
+<form class="container" method="post" action="/index">
+    <label for="username" class="control-label">Username</label>
+    <input name="username" type="text" class="form-control" id="exampleInputUsername" placeholder="Username">
+    <label for="exampleInputPassword1" class="control-label">Password</label>
+    <input name="passowrd" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+</div>
+
+</body>
+
+</html>
