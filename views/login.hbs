@@ -56,11 +56,11 @@ Redirect to another page and show the Username and Secure encrypted hash of the 
 {{else}}
 <h5 class="heading">Please login below</h5>
 {{/if}}
-<form class="container" method="post" action="/index">
+<form class="container" method="post" action="/login">
     <label for="username" class="control-label">Username</label>
     <input name="username" type="text" class="form-control" id="exampleInputUsername" placeholder="Username">
     <label for="exampleInputPassword1" class="control-label">Password</label>
-    <input name="passowrd" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+    <input name="password" type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 </div>

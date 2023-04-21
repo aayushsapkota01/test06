@@ -2,12 +2,13 @@ const express = require("express");
 const app = express();
 const exphbs = require("express-handlebars");
 const clientSessions = require("client-sessions");
-const HTTP_PORT = process.env.PORT || 8080;
+const bcrypt = require("bcrypt");
+const HTTP_PORT = process.env.PORT || 8081;
 
 function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
- 
+
 // Register handlerbars as the rendering engine for views
 app.engine(".hbs", exphbs.engine({ extname: ".hbs" }));
 app.set("view engine", ".hbs");
@@ -17,12 +18,14 @@ app.set("view engine", ".hbs");
 app.use(express.static("static"));
 
 // Setup client-sessions
-app.use(clientSessions({
-  cookieName: "session", // this is the object name that will be added to 'req'
-  secret: "week10example_web322", // this should be a long un-guessable string.
-  duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
-  activeDuration: 1000 * 60 // the session will be extended by this many ms each request (1 minute)
-}));
+app.use(
+  clientSessions({
+    cookieName: "session", // this is the object name that will be added to 'req'
+    secret: "week10example_web322", // this should be a long un-guessable string.
+    duration: 2 * 60 * 1000, // duration of the session in milliseconds (2 minutes)
+    activeDuration: 1000 * 60, // the session will be extended by this many ms each request (1 minute)
+  })
+);
 
 // Parse application/x-www-form-urlencoded
 app.use(express.urlencoded({ extended: false }));
@@ -32,7 +35,6 @@ function onHttpStart() {
   console.log("Express http server listening on: " + HTTP_PORT);
 }
 
- 
 function ensureLogin(req, res, next) {
   if (!req.session.user) {
     res.redirect("/login");
@@ -46,7 +48,7 @@ app.get("/", (req, res) => {
 });
 
 // Display the login html page
-app.get("/login", function(req, res) {
+app.get("/login", function (req, res) {
   res.render("login", { layout: false });
 });
 
@@ -55,36 +57,38 @@ app.post("/login", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  if(username === "" || password === "") {
+  if (username === "" || password === "") {
     // Render 'missing credentials'
-    return res.render("login", { errorMsg: "Missing credentials.", layout: false });
-  }
-
-  // use sample "user" (declared above)
-  if(username === user.username && password === user.password){
-
-    // Add the user on the session and redirect them to the dashboard page.
-    req.session.user = {
-      username: user.username,
-      email: user.email
-    };
-
-    res.redirect("/dashboard");
+    return res.render("login", {
+      layout: false,
+    });
   } else {
-    // render 'invalid username or password'
-    res.render("login", { errorMsg: "invalid username or password!", layout: false});
+    bcrypt.hash(password, 1, (err, hash) => {
+      if (err) {
+        console.error("Server Error");
+      }
+      // Pass the username and hashed password as query parameters
+      res.redirect(`/dashboard?username=${username}&password=${hash}`);
+    });
   }
 });
 
 // Log a user out by destroying their session
 // and redirecting them to /login
-app.get("/logout", function(req, res) {
+app.get("/logout", function (req, res) {
   req.session.reset();
   res.redirect("/login");
 });
 
-app.get("/dashboard", ensureLogin, (req, res) => {
-  res.render("dashboard", {user: req.session.user, layout: false});
+app.get("/dashboard", (req, res) => {
+  const username = req.query.username;
+  const password = req.query.password;
+
+  res.render("dashboard", {
+    username: username,
+    password: password,
+    layout: false,
+  });
 });
 
 app.listen(HTTP_PORT, onHttpStart);
